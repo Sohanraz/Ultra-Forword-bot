@@ -30,7 +30,7 @@ async def settings_query(bot, query):
      _bot = await db.get_bot(user_id)
      if _bot is not None:
         buttons.append([InlineKeyboardButton(_bot['name'],
-                         callback_data='editbot')])
+                         callback_data=f"settings#editbot")])
      else:
         buttons.append([InlineKeyboardButton('✚ Add bot ✚', 
                          callback_data="settings#addbot")])
@@ -379,7 +379,7 @@ async def settings_query(bot, query):
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('🤖 BOTS',
-                    callback_data='bots'),
+                    callback_data=f'settings#bots'),
        InlineKeyboardButton('📌 CHANNELS',
                     callback_data=f'settings#channels')
        ],[
