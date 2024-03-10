@@ -4,7 +4,7 @@ from asyncio import coroutines
 import logging.config
 from database import db 
 from config import Config 
-from pyropatch import listen 
+#from pyropatch import listen 
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer 
 from pyrogram.enums import ParseMode
