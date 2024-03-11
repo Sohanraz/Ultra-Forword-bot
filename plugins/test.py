@@ -5,10 +5,10 @@ import asyncio
 import logging 
 from database import db 
 from config import Config, temp
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
-from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-from pyrogram.errors import FloodWait
+from pyrogrammod.client import Client, filters
+from pyrogrammod.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
+from pyrogrammod.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
+from pyrogrammod.errors import FloodWait
 from config import Config
 from translation import Translation
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ class CLIENT:
        'is_bot': True,
        'user_id': user_id,
        'name': _bot.first_name,
-       'token': bot_token,
+       'token': _bot.token,
        'username': _bot.username 
      }
      await db.add_bot(details)
@@ -63,7 +63,7 @@ class CLIENT:
     
   async def add_session(self, bot, message):
      user_id = int(message.from_user.id)
-     text = "<b>⚠️ DISCLAIMER ⚠️</b>\n\n<code>you can use your session for forward message from private chat to another chat.\nPlease add your pyrogram session with your own risk. Their is a chance to ban your account. My developer is not responsible if your account may get banned.</code>"
+     text = "<b>⚠️ DISCLAIMER ⚠️</b>\n\n<code>you can use your session for forward message from private chat to another chat.\nPlease add your pyrogram session with your own risk. My developer is not responsible if your account may get banned.</code>"
      await bot.send_message(user_id, text=text)
      msg = await bot.ask(chat_id=user_id, text="<b>send your pyrogram session.\n\n/cancel - cancel the process</b>")
      if msg.text=='/cancel':
@@ -102,7 +102,7 @@ async def resetall(bot, message):
   ERRORS = []
   async for user in users:
       user_id = user['id']
-      default = await get_configs(user_id)
+      default = await db.get_configs(user_id)
       default['db_uri'] = None
       total += 1
       if total %10 == 0:
@@ -120,37 +120,4 @@ async def resetall(bot, message):
 async def get_configs(user_id):
   #configs = temp.CONFIGS.get(user_id)
   #if not configs:
-  configs = await db.get_configs(user_id)
-  #temp.CONFIGS[user_id] = configs 
-  return configs
-                          
-async def update_configs(user_id, key, value):
-  current = await db.get_configs(user_id)
-  if key in ['caption', 'duplicate', 'db_uri', 'forward_tag', 'protect', 'file_size', 'size_limit', 'extension', 'keywords', 'button']:
-     current[key] = value
-  else: 
-     current['filters'][key] = value
- # temp.CONFIGS[user_id] = value
-  await db.update_configs(user_id, current)
-    
-def parse_buttons(text, markup=True):
-    buttons = []
-    for match in BTN_URL_REGEX.finditer(text):
-        n_escapes = 0
-        to_check = match.start(1) - 1
-        while to_check > 0 and text[to_check] == "\\":
-            n_escapes += 1
-            to_check -= 1
-
-        if n_escapes % 2 == 0:
-            if bool(match.group(4)) and buttons:
-                buttons[-1].append(InlineKeyboardButton(
-                    text=match.group(2),
-                    url=match.group(3).replace(" ", "")))
-            else:
-                buttons.append([InlineKeyboardButton(
-                    text=match.group(2),
-                    url=match.group(3).replace(" ", ""))])
-    if markup and buttons:
-       buttons = InlineKeyboardMarkup(buttons)
-    return buttons if buttons else None
+  configs = await db.get_configs
