@@ -20,7 +20,6 @@ logger.setLevel(logging.INFO)
 BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)]\[buttonurl:/{0,2}(.+?)(:same)?])")
 
 class CLIENT:
-    dclass CLIENT:
   def __init__(self):
      self.api_id = Config.API_ID
      self.api_hash = Config.API_HASH
